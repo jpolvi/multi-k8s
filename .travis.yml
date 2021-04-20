@@ -1,0 +1,25 @@
+language: generic
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t jpolvi/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true USERNAME/react-test npm test
+
+after_success:
+    # Build images
+    - docker build -t jpolvi/multi-client ./client
+    - docker build -t jpolvi/multi-nginx ./nginx
+    - docker build -t jpolvi/multi-server ./server
+    - docker build -t jpolvi/multi-worker ./worker
+    # Log in to Docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-sdtin  
+    # Push images to Docker Hub
+    - docker push jpolvi/multi-client
+    - docker push jpolvi/multi-nginx 
+    - docker push jpolvi/multi-server
+    - docker push jpolvi/multi-worker
+
