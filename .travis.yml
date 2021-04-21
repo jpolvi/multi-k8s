@@ -16,7 +16,7 @@ after_success:
     - docker build -t jpolvi/multi-server ./server
     - docker build -t jpolvi/multi-worker ./worker
     # Log in to Docker CLI
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-sdtin  
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin  
     # Push images to Docker Hub
     - docker push jpolvi/multi-client
     - docker push jpolvi/multi-nginx 
@@ -34,4 +34,3 @@ deploy:
         branch: master
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key: $AWS_SECRET_KEY
-    
